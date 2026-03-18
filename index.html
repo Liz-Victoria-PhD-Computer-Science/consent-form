@@ -7,71 +7,84 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* General Layout */
         body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; color: #212529; line-height: 1.5; padding: 20px; }
-        .wrapper { max-width: 850px; margin: auto; background: white; padding: 50px; border-radius: 4px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .input-box { background: #f0f4f8; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #d1d9e0; }
-        h1 { font-size: 22px; text-decoration: underline; text-align: center; margin-bottom: 30px; }
-        h2 { font-size: 16px; margin-top: 20px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        p, li { font-size: 13px; text-align: justify; margin-bottom: 10px; }
-        .sig-font { font-family: 'Dancing Script', cursive; font-size: 28px; color: #003366; }
-        .field-label { font-weight: bold; font-size: 14px; margin-top: 15px; }
-        .user-input { width: 100%; padding: 12px; border: 2px solid #0052cc; border-radius: 4px; font-size: 16px; margin-bottom: 15px; }
-        .save-btn { background: #0052cc; color: white; border: none; padding: 15px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; font-size: 18px; }
-        .save-btn:hover { background: #003d99; }
-        .instruction-banner { display: none; margin-top: 20px; padding: 15px; background: #d4edda; color: #155724; border-radius: 4px; font-weight: bold; text-align: center; }
-        .address-footer { margin-top: 40px; font-size: 11px; color: #666; text-align: center; }
+        .wrapper { max-width: 800px; margin: auto; background: white; padding: 40px; border-radius: 4px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        
+        /* Prevent elements from being cut in half during PDF generation */
+        .no-break { page-break-inside: avoid; break-inside: avoid; }
+        
+        h1 { font-size: 20px; text-decoration: underline; text-align: center; margin-bottom: 25px; }
+        p, li { font-size: 13px; text-align: justify; margin-bottom: 12px; }
+        
+        /* Signature Styling */
+        .sig-font { font-family: 'Dancing Script', cursive; font-size: 28px; color: #003366; border-bottom: 1px solid #333; display: inline-block; min-width: 220px; padding: 0 10px; }
+        
+        /* Footer/Address Styling */
+        .address-footer { margin-top: 30px; font-size: 11px; color: #666; text-align: center; border-top: 1px solid #eee; padding-top: 15px; }
+
+        /* Input Panel - Hidden on Print/PDF */
+        .input-box { background: #f0f4f8; padding: 20px; border-radius: 8px; margin-top: 30px; border: 1px solid #d1d9e0; }
+        .field-label { font-weight: bold; font-size: 14px; margin-bottom: 8px; display: block; }
+        .user-input { width: 100%; padding: 12px; border: 2px solid #0052cc; border-radius: 4px; font-size: 16px; margin-bottom: 15px; box-sizing: border-box; }
+        .btn-container { display: flex; gap: 10px; }
+        .save-btn { background: #0052cc; color: white; border: none; padding: 15px; border-radius: 4px; font-weight: bold; cursor: pointer; flex: 3; font-size: 16px; }
+        .reset-btn { background: #6c757d; color: white; border: none; padding: 15px; border-radius: 4px; cursor: pointer; flex: 1; }
+        
+        /* Success Message */
+        .instruction-banner { display: none; margin-top: 20px; padding: 15px; background: #d4edda; color: #155724; border-radius: 4px; font-weight: bold; text-align: center; border: 1px solid #c3e6cb; }
+
         @media print { .input-box { display: none; } }
     </style>
 </head>
 <body>
 
 <div class="wrapper" id="content-to-export">
-    <div class="input-box" id="ui-panel">
-        <label class="field-label">Type Your Full Name to Sign:</label>
-        <input type="text" id="nameInput" class="user-input" placeholder="e.g. Jane Doe" oninput="syncFields()">
-        <button class="save-btn" onclick="generatePDF()">Save & Download Agreement</button>
-    </div>
-
     <h1>Marketing Consent & Release Agreement</h1>
 
-    <p><strong>1. Parties Involved</strong></p>
-    <p>This agreement is between ServiceWorks (“The Company”) and <strong id="display-name-top">________________</strong> (“The Participant”).</p>
+    <div class="contract-body">
+        <p><strong>1. Parties Involved</strong></p>
+        <p>This agreement is between ServiceWorks (“The Company”) and <strong id="display-name-top">________________</strong> (“The Participant”).</p>
 
-    <p><strong>2. Grant of Rights & Standard Editing</strong></p>
-    <p>The Participant grants the Company and its affiliates, agents, and representatives the irrevocable right and permission to use the Participant’s name, likeness, image, voice, and/or appearance (collectively, “The Materials”) in any form of media, including but not limited to photographs, video recordings, audio recordings, and written testimonials, for marketing, advertising, promotional, and educational purposes.</p>
-    <p><em>Editing Scope:</em> The Company may use industry-standard digital editing tools and software (such as Canva, CapCut, or similar platforms) to enhance image and audio quality. This includes, but is not limited to, cropping, color correction, and noise reduction.</p>
-    <p><em>Likeness Integrity:</em> The Company will not use generative artificial intelligence to fundamentally alter the Participant’s actual appearance or speech without additional written consent.</p>
+        <p><strong>2. Grant of Rights & Standard Editing</strong></p>
+        <p>The Participant grants the Company and its affiliates, agents, and representatives the irrevocable right and permission to use the Participant’s name, likeness, image, voice, and/or appearance (collectively, “The Materials”) in any form of media for marketing, advertising, promotional, and educational purposes.</p>
+        <p><em>Editing Scope:</em> The Company may use industry-standard digital editing tools (Canva, CapCut, etc.) to enhance quality. <em>Likeness Integrity:</em> The Company will not use generative AI to fundamentally alter appearance or speech without additional consent.</p>
 
-    <p><strong>3. Usage and Distribution</strong></p>
-    <p>The Participant acknowledges that the Materials may be used for External Purposes (social media, websites, email campaigns, etc.) and Internal Purposes (training videos, newsletters, etc.).</p>
+        <p><strong>3. Usage and Distribution</strong></p>
+        <p>The Participant acknowledges Materials may be used for External (social, web, ads) and Internal (training, newsletters) purposes.</p>
 
-    <p><strong>4. Ownership</strong></p>
-    <p>All rights, title, and interest in the Materials shall belong exclusively to the Company. The Participant waives any right to inspect or approve the final product.</p>
+        <p><strong>4. Ownership</strong></p>
+        <p>All rights, title, and interest belong exclusively to the Company. Participant waives the right to inspect or approve the final product.</p>
 
-    <p><strong>5. No Compensation</strong></p>
-    <p>The Participant will not receive any payment, royalty, or other compensation for the use of the Materials.</p>
+        <p><strong>5. No Compensation / 6. Duration</strong></p>
+        <p>No payment or royalties will be provided. This consent is perpetual and worldwide.</p>
 
-    <p><strong>6. Duration of Consent</strong></p>
-    <p>This consent is perpetual, worldwide, and may only be revoked in writing with reasonable notice, except where prohibited by law.</p>
+        <p><strong>7. Release of Liability</strong></p>
+        <p>The Participant releases the Company from all claims, including defamation or invasion of privacy, arising from the use of the Materials.</p>
+    </div>
 
-    <p><strong>7. Release of Liability</strong></p>
-    <p>The Participant releases and discharges the Company from any and all claims, demands, or causes of action arising out of or in connection with the use of the Materials.</p>
-
-    <hr style="margin-top: 40px; border: 0; border-top: 1px solid #ccc;">
-
-    <div style="margin-top: 20px;">
+    <div class="no-break" style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">
         <p><strong>Participant Name:</strong> <span id="display-name-bottom">________________</span></p>
         <p><strong>Participant Signature:</strong> <span id="display-signature" class="sig-font"></span></p>
         <p><strong>Date:</strong> <span id="display-date">________________</span></p>
     </div>
 
-    <div class="address-footer">
+    <div class="no-break address-footer">
         1001 Craig Road, Suite 456, Creve Coeur, MO, 63146, US<br>
         contact@service.works
     </div>
 
     <div id="email-note" class="instruction-banner">
-        ✅ Agreement Downloaded! Please email this file to <strong>elizabeth.kresock@service.works</strong> (Customer Marketing & Community Manager).
+        ✅ Agreement Downloaded! Please email this file to <strong>elizabeth.kresock@service.works</strong>.
+    </div>
+
+    <div class="input-box" id="ui-panel">
+        <label class="field-label">Type your full name to sign:</label>
+        <input type="text" id="nameInput" class="user-input" placeholder="Enter your name..." oninput="syncFields()">
+        <div class="btn-container">
+            <button class="save-btn" onclick="generatePDF()">Click to Sign & Save PDF</button>
+            <button class="reset-btn" onclick="resetForm()">Reset</button>
+        </div>
     </div>
 </div>
 
@@ -84,26 +97,39 @@
         document.getElementById('display-date').innerText = new Date().toLocaleDateString();
     }
 
+    function resetForm() {
+        document.getElementById('nameInput').value = '';
+        syncFields();
+    }
+
     function generatePDF() {
         const name = document.getElementById('nameInput').value;
         if (!name) {
-            alert("Please type your name to sign the document.");
+            alert("Please type your name first.");
             return;
         }
 
-        // Hide UI for a clean PDF
+        // Prepare UI for capture
         document.getElementById('ui-panel').style.display = 'none';
         document.getElementById('email-note').style.display = 'block';
 
         const element = document.getElementById('content-to-export');
+        
         const opt = {
-            margin:       [0.5, 0.5],
+            margin:       [0.5, 0.5, 0.5, 0.5],
             filename:     'ServiceWorks_Consent_' + name.replace(/\s+/g, '_') + '.pdf',
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            html2canvas:  { 
+                scale: 2, 
+                useCORS: true,
+                letterRendering: true,
+                scrollY: 0
+            },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+            pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
         };
 
+        // Export and then restore UI visibility if needed
         html2pdf().set(opt).from(element).save();
     }
 </script>
